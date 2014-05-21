@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 public class Main extends JPanel {
 
 
+//change from PC
 	int minimumFieldWidth = 40;
 	
 	private int players;
@@ -30,8 +31,8 @@ public class Main extends JPanel {
 	
 	public void setMap(Map map){
 		this.map = map;
-		if(width / map.sizex < height / map.sizey)		blockSize = width  / map.sizex;
-		else											blockSize = height / map.sizey;
+		if(width / map.sizex < height / map.sizey)		blockSize = width  / map.sizex - 1;
+		else											blockSize = height / map.sizey - 1;
 		lineWidth = blockSize / 10;
 	}
 	
@@ -45,21 +46,21 @@ public class Main extends JPanel {
 		g2d.setColor(new Color(60,60,60));
 		
 		//fill bottom edges
-		g2d.fillRect(blockSize * map.sizex - lineWidth, 0, lineWidth, blockSize * map.sizey);
-		g2d.fillRect(0, blockSize * map.sizey - lineWidth, blockSize * map.sizex, lineWidth);
 		
-		for(int y = 0; y < map.wall[0].length; y++){
-			for(int x = 0; x < map.wall.length; x++){ //horizontal lines
-				if(map.wall[x][y]) g2d.fillRect(x * blockSize, y * blockSize, lineWidth + blockSize, lineWidth);
+		for(int y = 0; y < map.sizey + 1; y++ ){
+			for(int x = 0; x < map.sizex; x++){
+				if(map.wallsH[x][y]) g2d.fillRect(x * blockSize, y * blockSize, blockSize + lineWidth, lineWidth);
 			}
-			for(int x = 0; x < map.wall.length; x++){
-				if(map.wall[x][y]) g2d.fillRect(x * blockSize, y * blockSize, lineWidth, lineWidth + blockSize);
+		}
+		for(int y = 0; y < map.sizey; y++ ){
+			for(int x = 0; x < map.sizex + 1; x++){
+				if(map.wallsV[x][y]) g2d.fillRect(x * blockSize, y * blockSize, lineWidth, blockSize + lineWidth);
 			}
 		}
 		
 		for(int i = 0; i < players; i++){
 			g2d.setColor(new Color(100 * i, 100 * i, 40));
-			g2d.fillRect(blockSize * map.startPositions[i][0] + lineWidth, blockSize * map.startPositions[i][1] + lineWidth, blockSize - lineWidth, blockSize - lineWidth);
+			g2d.fillRect(blockSize * (map.startPositions[i][0] - 1) + lineWidth, blockSize * (map.startPositions[i][1] - 1) + lineWidth, blockSize - lineWidth, blockSize - lineWidth);
 		}
 		
 		//if(!running){
@@ -96,7 +97,7 @@ public class Main extends JPanel {
 	public static void main(String[] args) throws InterruptedException {
 
 		int players = 2;
-		JFrame frame = new JFrame("Mini Tennis");
+		JFrame frame = new JFrame("Tank Game");
 		Main main = new Main(players, 1600, 900);
 		Map map = new Map(players);
 		System.out.println(map.sizex + "  " + map.sizey);
@@ -109,12 +110,12 @@ public class Main extends JPanel {
 		frame.requestFocus();
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		map.checkMapValidity();
+		
 		while (true) {
 			//main.moveBall();
 			//main.iHandler.update();
 			main.repaint();
-			map.checkMapValidity();
 			Thread.sleep(1000);
 		}
 	}
