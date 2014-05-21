@@ -1,5 +1,5 @@
 package main;
-
+//Ckeck
 public class Map {
 	
 	public int sizex; //Amount of blocks on the x-axis
